@@ -34,7 +34,7 @@ public class Controller implements ChangeListener {
 
 				Display display = new Display();
 				this.view.clock.add(display);
-				System.out.println("es sollte eine box erscheinen");
+			//	System.out.println("es sollte eine box erscheinen");
 
 			}
 

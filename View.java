@@ -18,6 +18,7 @@ public class View extends JFrame {
 
 		JLabel jlPic = new JLabel();
 		String image = "C:\\Users\\Sasch\\Documents\\OneDrive\\BA_Informatik\\eclipse_workspace_2020\\UI\\src\\cs18_1_clock\\uhr.jpeg";
+		//String image = "D:\\OneDrive\\BA Informatik\\eclipse_workspace_2020\\UI\\src\\cs18_1_clock\\uhr.jpeg";
 		ImageIcon imgClock = new ImageIcon(image);
 
 		jlPic.setIcon(imgClock);

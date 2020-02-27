@@ -5,14 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.util.Date;
 import java.util.TimeZone;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
-public class Display extends JPanel implements java.io.Serializable, PropertyChangeListener, ActionListener {
+public class Display extends JPanel implements java.io.Serializable, ActionListener {
 
 	// Automatic serialization, implemented by the Serializable interface. The Java
 	// serialization software serializes the entire object, except transient and
@@ -30,18 +31,21 @@ public class Display extends JPanel implements java.io.Serializable, PropertyCha
 	public Display() {
 
 		formatter = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
-		timer = new Timer(100,  this);
+		timer = new Timer(100, this);
+
 		timer.start();
 
 		Font font = new Font(Font.SANS_SERIF, Font.BOLD, 48);
 
 		String comboBox[] = { "Asia/Bangkok", "Asia/Beirut", "Asia/Damascus", "Asia/Istanbul", "Asia/Jakarta",
-				"Asia/Shanghai", "Asia/Tokyo", "Europe/Berlin", "Europe/Lisbon", "Europe/Moscow" }; // auf .txt
-																									// verweisen lassen
+				"Asia/Shanghai", "Asia/Tokyo", "Europe/Berlin", "Europe/Lisbon", "Europe/Moscow",
+				"America/Los_Angeles" }; // auf .txt
+		// verweisen lassen
 
 		JComboBox zonen = new JComboBox<String>(comboBox);
 		zonen.setSelectedIndex(7);
-		zonen.addPropertyChangeListener(this);
+		// zonen.addPropertyChangeListener(this);
+		zonen.addActionListener(this);
 
 		label = new JLabel();
 		label.setForeground(Color.RED);
@@ -61,9 +65,26 @@ public class Display extends JPanel implements java.io.Serializable, PropertyCha
 		this.add(label);
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+
+		if (source instanceof Timer) {
+			Date date = new Date();
+			setDate(date);
+
+		} else if (source instanceof JComboBox<?>) {
+			int i = ((JComboBox) source).getSelectedIndex();
+			String zone = (String) ((JComboBox) source).getItemAt(i);
+
+			TimeZone tz = TimeZone.getTimeZone(zone);
+
+			// String tzString = tz.getDisplayName();
+			// System.out.println(tzString);
+			setTimeZone(tz);
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 
 	}
 
@@ -74,31 +95,30 @@ public class Display extends JPanel implements java.io.Serializable, PropertyCha
 		return zeitZoneKette;
 	}
 
-	public void setTimeZone(String s) {
-		
-		formatter.setTimeZone(TimeZone.getTimeZone(s));
+	public void setTimeZone(TimeZone s) {
+
+		formatter.setTimeZone(s);
 
 	}
 
-	public String getDate() {
-		DateFormat df;
-		//df.parse
+	public Date getDate() throws ParseException {
+		DateFormat df = DateFormat.getDateInstance();
+		Date date = df.parse(this.date);
 		return date;
-		
-		/*Erzeugen Sie in der „get“-Methode zum Datum via statischer Methode der Klasse
-		„DateFormat“ zunächst eine Instanz! Nutzen Sie dann deren „parse“-Methode! Übergeben Sie
-		ihr den aktuellen Wert des „date“-Attributes der „Display“-Klasse! Verwenden Sie das somit
-		bestimmte Datum als Rückgabewert! [2]*/
+
+		/*
+		 * Erzeugen Sie in der „get“-Methode zum Datum via statischer Methode der Klasse
+		 * „DateFormat“ zunächst eine Instanz! Nutzen Sie dann deren „parse“-Methode!
+		 * Übergeben Sie ihr den aktuellen Wert des „date“-Attributes der
+		 * „Display“-Klasse! Verwenden Sie das somit bestimmte Datum als Rückgabewert!
+		 * [2]
+		 */
 	}
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+	public void setDate(Date date) {
+		this.date = formatter.format(date);
+		this.label.setText(this.date);
 
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
